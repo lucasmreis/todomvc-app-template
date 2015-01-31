@@ -21,8 +21,13 @@ angular.module('todomvc').factory('TodoService', function() {
         R.assoc('completed', false)))(todo);
   };
 
+  var removeTodo = function(todo, todos) {
+    var isNotTodo = R.not(R.eqDeep(todo));
+    return R.filter(isNotTodo)(todos);
+  };
 
   return {
-    addTodo: addTodo
+    addTodo: addTodo,
+    removeTodo: removeTodo
   };
 });
