@@ -12,6 +12,7 @@
     "karma": "^0.12.31",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^0.1.10",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-verbose-reporter": "0.0.1"
   }
 }

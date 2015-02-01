@@ -1,33 +1,55 @@
-angular.module('todomvc').factory('TodoService', function() {  
-  // var state = {
-  //   nowShowing :: enum
-  //   todos: [{
-  //     id :: string (KEY)
-  //     title :: string
-  //     completed :: boolean
-  //   }]
-  // }
-
+angular.module('todomvc').factory('TodoService', function() {
   var newId = R.compose( // [todo] => unique id
     R.add(1),
     R.max,
-    R.pluck('id'));
+    R.keys);
+
+  var getId = R.compose(
+    String,
+    R.get('id'));
+
+  var assocTo = R.curry(function(prop, obj, v) {
+    return R.assoc(prop, v, obj);
+  });
 
   var addTodo = function(todo, todos) {
     return R.compose(
-      R.appendTo(todos),
-      R.compose(
-        R.assoc('id', newId(todos)),
-        R.assoc('completed', false)))(todo);
+      assocTo(newId(todos), todos),
+      R.assoc('id', newId(todos)),
+      R.assoc('completed', false))(todo);
   };
 
   var removeTodo = function(todo, todos) {
-    var isNotTodo = R.not(R.eqDeep(todo));
-    return R.filter(isNotTodo)(todos);
+    var id = [getId(todo)];
+    return R.omit(id)(todos);
+  };
+
+  var toggleCompleted = function(todo, todos) {
+    return R.compose(
+      assocTo(getId(todo), todos),
+      R.assoc('completed', !todo.completed))(todo);
+  };
+
+  var renameTodo = function(todo, todos) {
+    return R.compose(
+      assocTo(getId(todo), todos),
+      R.assoc('title', todo.title))(todo);
+  };
+
+  var getCompletedIds = R.compose(
+    R.map(getId),
+    R.filter(R.get('completed')),
+    R.values);
+
+  var clearCompleted = function(todos) {
+    return R.omit(getCompletedIds(todos))(todos);
   };
 
   return {
     addTodo: addTodo,
-    removeTodo: removeTodo
+    removeTodo: removeTodo,
+    toggleCompleted: toggleCompleted,
+    renameTodo: renameTodo,
+    clearCompleted: clearCompleted
   };
 });
