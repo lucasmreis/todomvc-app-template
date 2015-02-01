@@ -1,55 +1,58 @@
 angular.module('todomvc').factory('TodoService', function() {
-  var newId = R.compose( // [todo] => unique id
-    R.add(1),
-    R.max,
-    R.keys);
-
-  var getId = R.compose(
-    String,
-    R.get('id'));
-
-  var assocTo = R.curry(function(prop, obj, v) {
-    return R.assoc(prop, v, obj);
-  });
-
-  var addTodo = function(todo, todos) {
-    return R.compose(
-      assocTo(newId(todos), todos),
-      R.assoc('id', newId(todos)),
-      R.assoc('completed', false))(todo);
+  var addTodo = function(title, todos) {
+    return R.append({ title: title, completed: false})(todos);
   };
 
-  var removeTodo = function(todo, todos) {
-    var id = [getId(todo)];
-    return R.omit(id)(todos);
+  var removeTodo = function(i, todos) {
+    return R.remove(i, 1)(todos);
   };
 
-  var toggleCompleted = function(todo, todos) {
-    return R.compose(
-      assocTo(getId(todo), todos),
-      R.assoc('completed', !todo.completed))(todo);
+  var updateTodo = function(i, todo) {
+    return R.mapIndexed(function(elt, idx, list) {
+      return idx === i ? todo : elt;
+    });
   };
 
-  var renameTodo = function(todo, todos) {
-    return R.compose(
-      assocTo(getId(todo), todos),
-      R.assoc('title', todo.title))(todo);
+  var toggleCompleted = function(i, todos) {
+    var newTodo = {title: todos[i].title, completed: !todos[i].completed};
+    return updateTodo(i, newTodo)(todos);
   };
 
-  var getCompletedIds = R.compose(
-    R.map(getId),
-    R.filter(R.get('completed')),
-    R.values);
+  var renameTodo = function(i, newTitle, todos) {
+    var newTodo = {title: newTitle, completed: todos[i].completed};
+    return updateTodo(i, newTodo)(todos);
+  };
+
+  var isNotCompleted = R.compose( // todo => boolean
+    function(x) { return !x; },
+    R.get('completed'));
 
   var clearCompleted = function(todos) {
-    return R.omit(getCompletedIds(todos))(todos);
+    return R.filter(isNotCompleted)(todos);
   };
 
+  var itemsLeft = R.compose( // [todo] => int
+    R.get('length'),
+    R.filter(isNotCompleted));
+
+  var hasCompletedTodos = R.compose( // [todo] => boolean
+    R.lt(0),
+    R.get('length'),
+    R.filter(R.get('completed')));
+
+  var areAllCompleted = R.compose(
+    R.eq(0),
+    R.get('length'),
+    R.filter(isNotCompleted));
+  
   return {
     addTodo: addTodo,
     removeTodo: removeTodo,
     toggleCompleted: toggleCompleted,
     renameTodo: renameTodo,
-    clearCompleted: clearCompleted
+    clearCompleted: clearCompleted,
+    itemsLeft: itemsLeft,
+    hasCompletedTodos: hasCompletedTodos,
+    areAllCompleted: areAllCompleted
   };
 });
