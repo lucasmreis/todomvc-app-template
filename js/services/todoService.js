@@ -1,4 +1,6 @@
 angular.module('todomvc').factory('TodoService', function() {
+  curry = R.curry;
+
   var addTodo = function(title, todos) {
     return R.append({ title: title, completed: false})(todos);
   };
@@ -13,10 +15,10 @@ angular.module('todomvc').factory('TodoService', function() {
     });
   };
 
-  var toggleCompleted = function(i, todos) {
+  var toggleCompleted = curry(function(i, todos) {
     var newTodo = {title: todos[i].title, completed: !todos[i].completed};
     return updateTodo(i, newTodo)(todos);
-  };
+  });
 
   var renameTodo = function(i, newTitle, todos) {
     var newTodo = {title: newTitle, completed: todos[i].completed};
@@ -44,7 +46,7 @@ angular.module('todomvc').factory('TodoService', function() {
     R.eq(0),
     R.get('length'),
     R.filter(isNotCompleted));
-  
+
   return {
     addTodo: addTodo,
     removeTodo: removeTodo,
