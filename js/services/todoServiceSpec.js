@@ -2,9 +2,8 @@ describe('TodoService', function() {
   var service;
 
   beforeEach(module('todomvc'));
-
-  beforeEach(inject(function(_TodoService_) {
-    service = _TodoService_;
+  beforeEach(inject(function(TodoService) {
+    service = TodoService;
   }));
 
   var logObj = function(x) { console.log(JSON.stringify(x, null, '  ')); };
