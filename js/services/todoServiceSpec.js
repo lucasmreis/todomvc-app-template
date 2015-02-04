@@ -21,6 +21,9 @@ describe('TodoService', function() {
       {title: 'new', completed: false}];
 
     expect(service.addTodo(newTodo, todos)).to.deep.equal(expected);
+    expect(service.addTodo('', todos)).to.deep.equal(todos);
+    expect(service.addTodo('     ', todos)).to.deep.equal(todos);
+
   });
 
   it('should remove todo from a collection', function() {
@@ -112,5 +115,29 @@ describe('TodoService', function() {
     expect(service.areAllCompleted(R.map(makeTodo)(todos1))).to.be.false;
     expect(service.areAllCompleted(R.map(makeTodo)(todos2))).to.be.true;
     expect(service.areAllCompleted(R.map(makeTodo)(todos3))).to.be.true;
+  });
+
+  it('should toggle all completed', function() {
+    var todosAllTrue = [
+      {title: 'something', completed: true},
+      {title: 'something', completed: true},
+      {title: 'something', completed: true},
+      {title: 'something', completed: true}];
+
+    var todosAllFalse = [
+      {title: 'something', completed: false},
+      {title: 'something', completed: false},
+      {title: 'something', completed: false},
+      {title: 'something', completed: false}];
+
+    var todosMixed = [
+      {title: 'something', completed: false},
+      {title: 'something', completed: false},
+      {title: 'something', completed: true},
+      {title: 'something', completed: true}];
+
+    expect(service.toggleAllCompleted(todosAllFalse)).to.deep.equal(todosAllTrue);
+    expect(service.toggleAllCompleted(todosMixed)).to.deep.equal(todosAllTrue);
+    expect(service.toggleAllCompleted(todosAllTrue)).to.deep.equal(todosAllFalse);
   });
 });

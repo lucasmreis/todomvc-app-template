@@ -13,11 +13,18 @@
     <section id="todoapp">
       <header id="header">
         <h1>todos</h1>
-        <input id="new-todo" placeholder="What needs to be done?" ng-model="ctrl.form.newTodo" autofocus>
+        <input id="new-todo" 
+               placeholder="What needs to be done?"
+               ng-model="ctrl.form.newTodo"
+               ng-keypress="ctrl.addTodo($event, ctrl.form, ctrl.state)"
+               autofocus>
       </header>
       <!-- This section should be hidden by default and shown when there are todos -->
-      <section id="main">
-        <input id="toggle-all" type="checkbox">
+      <section id="main" ng-if="ctrl.hasTodos(ctrl.state)">
+        <input id="toggle-all" 
+               type="checkbox" 
+               ng-model="ctrl.areAllCompleted(ctrl.state)"
+               ng-click="ctrl.toggleAllCompleted(ctrl.state)">
         <label for="toggle-all">Mark all as complete</label>
         <ul id="todo-list">
           <!-- These are here just to show the structure of the list items -->
@@ -25,34 +32,17 @@
           <li ng-repeat="todo in ctrl.form.todos" ng-class="{ completed: todo.completed }">
             <div class="view">
               <input class="toggle" type="checkbox" ng-model="todo.completed" ng-click="ctrl.toggleCompleted($index, ctrl.state)">
-              <label>Taste JavaScript 123</label>
-              <button class="destroy"></button>
+              <label>{{ todo.title }}</label>
+              <button class="destroy" ng-click="ctrl.removeTodo($index, ctrl.state)"></button>
             </div>
             <input class="edit" value="Create a TodoMVC template">
-          </li>
-
-          <li class="completed">
-            <div class="view">
-              <input class="toggle" type="checkbox" checked>
-              <label>Taste JavaScript</label>
-              <button class="destroy"></button>
-            </div>
-            <input class="edit" value="Create a TodoMVC template">
-          </li>
-          <li>
-            <div class="view">
-              <input class="toggle" type="checkbox">
-              <label>Buy a unicorn</label>
-              <button class="destroy"></button>
-            </div>
-            <input class="edit" value="Rule the web">
           </li>
         </ul>
       </section>
       <!-- This footer should hidden by default and shown when there are todos -->
-      <footer id="footer">
+      <footer id="footer" ng-if="ctrl.hasTodos(ctrl.state)">
         <!-- This should be `0 items left` by default -->
-        <span id="todo-count"><strong>0</strong> item left</span>
+        <span id="todo-count"><strong>{{ ctrl.itemsLeft(ctrl.state) }}</strong>{{ ctrl.makePhrase(ctrl.state) }}</span>
         <!-- Remove this if you don't implement routing -->
         <ul id="filters">
           <li>
@@ -66,7 +56,7 @@
           </li>
         </ul>
         <!-- Hidden if no completed items are left ↓ -->
-        <button id="clear-completed"></button>
+        <button id="clear-completed" ng-click="ctrl.clearCompleted(ctrl.state)"></button>
       </footer>
     </section>
     <footer id="info">
