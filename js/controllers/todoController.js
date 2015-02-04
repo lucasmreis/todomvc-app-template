@@ -9,11 +9,15 @@ angular.module('todomvc').controller('TodoCtrl', function(TodoStateService, Todo
   var state = {};
   
   var form = {
+    allCompleted: false,
     newTodo: ''
   };
 
   var changeState = TodoStateService.change('todos');
-  TodoStateService.listen('todos', function(t) { state.todos = t; form.todos = R.clone(t); });
+  TodoStateService.listen('todos', function(t) { 
+    state.todos = t; 
+    form.todos = R.clone(t);
+    form.allCompleted = TodoService.areAllCompleted(t); });
 
   var hasTodos = compose(
     R.lt(0),
@@ -59,10 +63,6 @@ angular.module('todomvc').controller('TodoCtrl', function(TodoStateService, Todo
     TodoService.toggleAllCompleted,
     get('todos'));
 
-  var areAllCompleted = compose(
-    TodoService.areAllCompleted,
-    get('todos'));
-
   var makePhrase = compose(
     ifElse(
       eq(1),
@@ -82,6 +82,5 @@ angular.module('todomvc').controller('TodoCtrl', function(TodoStateService, Todo
   self.itemsLeft = itemsLeft;
   self.clearCompleted = clearCompleted;
   self.toggleAllCompleted = toggleAllCompleted;
-  self.areAllCompleted = areAllCompleted;
   self.makePhrase = makePhrase;
 });

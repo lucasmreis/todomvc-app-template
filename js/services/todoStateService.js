@@ -3,7 +3,7 @@ angular.module('todomvc').factory('TodoStateService', function(StateService) {
   var state = {
     todos: [
       {title: 'oi!', completed: false},
-      {title: 'oi! 2', completed: false},
+      {title: 'oi! 2', completed: true},
       {title: 'oi! 3', completed: true},
       {title: 'oi! 4', completed: false}]
   };

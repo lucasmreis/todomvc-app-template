@@ -22,8 +22,8 @@
       <!-- This section should be hidden by default and shown when there are todos -->
       <section id="main" ng-if="ctrl.hasTodos(ctrl.state)">
         <input id="toggle-all" 
-               type="checkbox" 
-               ng-model="ctrl.areAllCompleted(ctrl.state)"
+               type="checkbox"
+               ng-model="ctrl.form.allCompleted"
                ng-click="ctrl.toggleAllCompleted(ctrl.state)">
         <label for="toggle-all">Mark all as complete</label>
         <ul id="todo-list">
