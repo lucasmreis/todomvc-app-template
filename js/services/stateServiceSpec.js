@@ -46,7 +46,6 @@ describe('StateService', function () {
     expect(sampleScope).to.equal('newValue');
   });
 
-
   it('can only change state using change function', function() {
     var state  = {
       simple: { data: 'value' }

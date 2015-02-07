@@ -14,6 +14,7 @@ angular.module('todomvc').controller('TodoCtrl', function(TodoStateService, Todo
   };
 
   var changeState = TodoStateService.change('todos');
+
   TodoStateService.listen('todos', function(t) { 
     state.todos = t; 
     form.todos = R.clone(t);

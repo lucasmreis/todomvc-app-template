@@ -1,12 +1,14 @@
 angular.module('todomvc').factory('StateService', function() {
+  var clone = R.clone;
+
   function get(state) {
     return function() {
-      return R.clone(state);
+      return clone(state);
     };
   }
 
   function getStateProp(state, prop) {
-    return R.clone(state[prop]);
+    return clone(state[prop]);
   }
 
   var change = R.curry(function(state, listeners, prop, data) {
